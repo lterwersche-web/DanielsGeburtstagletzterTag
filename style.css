@@ -437,6 +437,7 @@ body {
 }
 .schluss > * { opacity: 0; }
 .wunsch {
+  white-space: pre-line; /* \n im Text = neue Zeile */
   font-family: var(--serif);
   font-weight: 600;
   font-size: clamp(36px, 9.6vw, 72px);

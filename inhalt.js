@@ -36,7 +36,7 @@ window.INHALT = {
   einleitung: [
     "Sieben Tage lang hab ich Danke gesagt.",
     "Aber dafür reichen keine sieben Zettel.",
-    "Weißt du noch …?",
+    // "Weißt du noch …?",   ← erstmal raus (// davor = wird übersprungen)
   ],
 
   // Wie lange jedes Foto zu sehen ist (in Sekunden)
@@ -80,9 +80,9 @@ window.INHALT = {
     zeile2: "PAPA", //  Feuerwerk-Schrift, Zeile 2
     neujahrKlein: "Frohes neues Jahr",
     neujahrGross: "2027", // Feuerwerk-Schrift
-    wunsch: "Bleib dir treu, Papa.",
-    wunschKlein: "Und lass uns 2027 gemeinsam noch ein Stück besser machen.",
-    absender: "Hab dich lieb ❤",
+    wunsch: "Hör nie auf,\ndu zu sein, Papa.", // \n = neue Zeile
+    wunschKlein: "", // optionaler kleiner Satz darunter, "" = keiner
+    absender: "Hab dich lieb, dein Lutz",
     nochmal: "Nochmal ansehen",
   },
 };

@@ -10,11 +10,11 @@ Animation mit Fotos, einem Herz aus Erinnerungen und einem Feuerwerk-„DANKE PA
 
 1. **Sperre:** Vor dem 31.12. sieht Papa nur „Noch nicht, Papa 😏“ und einen Countdown.
 2. **Start:** Ein Knopf, damit das Handy die Musik abspielen darf.
-3. **Einleitung:** drei kurze Sätze.
+3. **Einleitung:** zwei kurze Sätze.
 4. **Fotos:** die Polaroids fliegen nacheinander rein, mit Jahreszahl und Satz.
 5. **Herz:** alle Fotos zerfallen in Pixel und fliegen zu einem schlagenden Herz.
 6. **Countdown:** 3 … 2 … 1, dann explodiert das Herz.
-7. **Finale:** Feuerwerk-Schrift „DANKE PAPA“, dann „Frohes neues Jahr 2027“, zum Schluss eure Botschaft.
+7. **Finale:** Feuerwerk-Schrift „DANKE PAPA“, dann „Frohes neues Jahr 2027“, zum Schluss „Hör nie auf, du zu sein, Papa.“
 
 ## Was du ändern kannst
 
@@ -38,4 +38,5 @@ Alles steht in **`inhalt.js`**: Texte, Fotos, Musik und das Datum der Sperre.
 - `style.css`: das Design (Farben, Schriften, Polaroids)
 - `app.js`: die Animation (Sterne, Herz, Feuerwerk, Ablauf)
 - `inhalt.js`: **deine Inhalte**
-- `qr-code.png` / `qr-code.svg`: der QR-Code zum Ausdrucken
+- `qr-herz.png` / `qr-herz.svg`: **der Herz-QR-Code zum Ausdrucken** (SVG ist auf 8 cm Breite eingestellt)
+- `qr-code.png` / `qr-code.svg`: normaler QR-Code als Ersatz

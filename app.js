@@ -956,14 +956,18 @@
     const box = document.createElement("div");
     box.className = "schluss";
     const wunsch = textEl("wunsch", F.wunsch || "");
-    const klein = textEl("wunsch-klein", F.wunschKlein || "");
+    const klein = F.wunschKlein ? textEl("wunsch-klein", F.wunschKlein) : null;
     const abs = textEl("absender", F.absender || "");
-    box.append(wunsch, klein, abs);
+    box.append(...[wunsch, klein, abs].filter(Boolean));
     texte.append(box);
     appear(wunsch);
-    await wait(1800);
-    appear(klein);
-    await wait(3800);
+    if (klein) {
+      await wait(1800);
+      appear(klein);
+      await wait(3800);
+    } else {
+      await wait(3600);
+    }
     appear(abs);
     await wait(2600);
 
