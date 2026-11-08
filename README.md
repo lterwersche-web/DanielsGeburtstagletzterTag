@@ -23,8 +23,16 @@ Alles steht in **`inhalt.js`**: Texte, Fotos, Musik und das Datum der Sperre.
 | Was | Wo |
 | --- | --- |
 | Fotos | Dateien in den Ordner `bilder/`, dann in `inhalt.js` bei `fotos` eintragen |
-| Musik | MP3 in den Ordner `musik/`, Name in `inhalt.js` bei `musik` |
+| Musik | MP3 als `song.mp3` in den Ordner `musik/` (anderer Name → in `inhalt.js` bei `musik` ändern) |
+| Song später starten | `musikStartBei` in `inhalt.js`, z. B. `12` = ab Sekunde 12 |
 | Texte | direkt in `inhalt.js` |
+
+## Sounds
+
+Alle Sounds entstehen live im Browser (Web Audio API), es gibt keine Sound-Dateien:
+Raketen-Pfeifen, Knall, Knistern, Herzschlag, Foto-Whoosh, Glitzer, Spannungsaufbau,
+Uhr-Ticken beim Countdown, Kino-Wumms + Mitternachtsglocke und eine Wunderkerze bei der Feuerwerk-Schrift.
+Gesamtlautstärke: `LAUT` ganz oben in `sound.js`.
 
 ## Szenen einzeln testen
 
@@ -37,6 +45,7 @@ Alles steht in **`inhalt.js`**: Texte, Fotos, Musik und das Datum der Sperre.
 - `index.html`: das Grundgerüst der Seite
 - `style.css`: das Design (Farben, Schriften, Polaroids)
 - `app.js`: die Animation (Sterne, Herz, Feuerwerk, Ablauf)
+- `sound.js`: alle Sounds, live per Code erzeugt (Feuerwerk, Herzschlag, Glocke, Glitzer …)
 - `inhalt.js`: **deine Inhalte**
 - `qr-herz.png` / `qr-herz.svg`: **der Herz-QR-Code zum Ausdrucken** (SVG ist auf 8 cm Breite eingestellt)
 - `qr-code.png` / `qr-code.svg`: normaler QR-Code als Ersatz

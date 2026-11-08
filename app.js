@@ -125,6 +125,7 @@
     if (now > nextShooter) {
       const ang = rand(0.35, 0.6), v = rand(0.7, 1.0);
       shooters.push({ x: rand(0.35, 1.05) * W, y: rand(0.02, 0.32) * H, vx: -Math.cos(ang) * v, vy: Math.sin(ang) * v, age: 0, life: rand(700, 1100) });
+      SFX.sternschnuppe(clamp(shooters[shooters.length - 1].x / W, 0, 1));
       nextShooter = now + rand(3500, 9000);
     }
     for (let i = shooters.length - 1; i >= 0; i--) {
@@ -183,7 +184,8 @@
     };
   }
 
-  function burst(x, y, type = "peony", pal = pick(PALETTES)) {
+  function burst(x, y, type = "peony", pal = pick(PALETTES), laut = 1) {
+    SFX.knall(clamp(x / W, 0, 1), type === "ring" || type === "herz" ? 0.8 : 1, type === "willow" || Math.random() < 0.3, laut);
     const s1 = SPR[pal[0]], s2 = SPR[pal[1]];
     const big = clamp(Math.min(W, H) / 390, 0.85, 1.9);
     addSpark(x, y, 0, 0, { life: 280, spr: SPR.weiss, size: 70 * big, drag: 1, g: 0 }); // Lichtblitz
@@ -224,9 +226,11 @@
   function launch(tx, ty, o = {}) {
     return new Promise((res) => {
       const x0 = tx + rand(-0.06, 0.06) * W;
+      const T = o.T || rand(950, 1350);
+      SFX.rakete(clamp(x0 / W, 0, 1), T / 1000);
       rockets.push({
         x0, y0: H + 12, tx, ty, x: x0, y: H + 12,
-        age: 0, T: o.T || rand(950, 1350), type: o.type || "peony", noBurst: !!o.noBurst, res,
+        age: 0, T, type: o.type || "peony", noBurst: !!o.noBurst, res,
       });
     });
   }
@@ -331,6 +335,8 @@
     const pts = textPoints(text, cy, size);
     await launch(W / 2, cy, { noBurst: true, T: 1100 });
     addSpark(W / 2, cy, 0, 0, { life: 380, spr: SPR.weiss, size: 120, drag: 1, g: 0 });
+    SFX.knall(0.5, 0.9, false);
+    SFX.schrift();
     const cols = ["champ", "gold", "gold", "weiss"];
     const group = [];
     for (const pt of pts) {
@@ -561,6 +567,11 @@
 
     const c = gctx;
     if (t > h.formedAt) h.beat = Math.min(1, h.beat + dt / 700);
+    const cyc = Math.floor(t / 1150);
+    if (cyc !== h.cyc) {
+      h.cyc = cyc;
+      if (h.beat > 0.05 && !h.still) SFX.herz(0.35 + 0.65 * h.beat, 0.115); // 0.115 s = genau beim sichtbaren Schlag
+    }
     const u = (t % 1150) / 1150;
     const pulse = Math.exp(-(((u - 0.1) / 0.055) ** 2)) + 0.55 * Math.exp(-(((u - 0.32) / 0.065) ** 2));
     const kick = now > h.kick ? Math.exp(-(now - h.kick) / 220) : 0;
@@ -636,7 +647,7 @@
 
     if (ambientGap && now > nextAmbient) {
       const side = Math.random() < 0.5 ? rand(0.1, 0.38) : rand(0.62, 0.9);
-      if (ambientOben) burst(side * W, rand(0.05, 0.17) * H, pickType()); // ohne Rakete, damit kein Schweif durch den Text geht
+      if (ambientOben) burst(side * W, rand(0.05, 0.17) * H, pickType(), pick(PALETTES), 0.6); // ohne Rakete, damit kein Schweif durch den Text geht
       else launch(side * W, rand(0.1, 0.3) * H, { type: pickType() });
       nextAmbient = now + rand(ambientGap * 0.6, ambientGap * 1.4);
     }
@@ -670,6 +681,7 @@
   }
 
   function addLine(text, { y = 0.5, cls = "" } = {}) {
+    SFX.zeile();
     const el = textEl("zeile " + cls, text);
     el.style.top = y * 100 + "%";
     texte.append(el);
@@ -812,6 +824,8 @@
     const mid = `${base} translate(0px, ${L.offY}px) rotate(${rand(-3, 3)}deg) scale(1)`;
     const to = `${base} translate(${slot.x}px, ${slot.y}px) rotate(${slot.r}deg) scale(${slot.s})`;
 
+    SFX.whoosh(Math.random() < 0.5 ? -0.6 : 0.6, 0, 1.2, 0.6);
+    setTimeout(() => SFX.papier(0.55), 1050);
     el.animate([{ transform: from, opacity: 0 }, { transform: mid, opacity: 1 }], {
       duration: 1500, easing: "cubic-bezier(.16,.84,.24,1)", fill: "forwards",
     });
@@ -833,6 +847,7 @@
     });
 
     setTimeout(() => {
+      SFX.whoosh(0, clamp(slot.x / (W / 2), -1, 1), 1.4, 0.3);
       el.animate([{ transform: mid, opacity: 1 }, { transform: to, opacity: 0.42 }], {
         duration: 1500, easing: "cubic-bezier(.65,0,.25,1)", fill: "forwards",
       });
@@ -858,6 +873,7 @@
 
     // kurz alle Fotos zusammen als Wand
     cards.forEach((c, k) => c.el.animate([{ opacity: 0.42 }, { opacity: 0.85 }], { duration: 1200, delay: k * 60, easing: "ease", fill: "forwards" }));
+    SFX.atem(3, 0.55);
     await wait(700);
     await showLine(I.wand, { y: 0.5, cls: "kursiv schatten", hold: 2000 });
     return cards;
@@ -871,6 +887,7 @@
     const parts = cards.length ? particlesFromCards(cards, L, cx, cy, hs) : particlesFromStars(cx, cy, hs);
     const formedAt = parts.reduce((m, p) => Math.max(m, p.d + p.dur), 0);
     heart = { parts, cx, cy, hs, t0: performance.now(), formedAt, alpha: 1, alphaT: 1, beat: 0, kick: -1e9, boom: false };
+    SFX.zerfall(formedAt / 1000);
 
     if (cards.length) {
       // die echten Fotos verschwinden, die Pixel übernehmen
@@ -881,14 +898,20 @@
     }
     tween((v) => (starAlpha = v), 0.7, 1, 2500);
 
-    await wait(formedAt + 300);
+    await wait(Math.max(0, formedAt - 500));
+    SFX.herzDa();
+    await wait(800);
     const textY = clamp((cy + hs * 0.95 + 56) / H, 0.6, 0.86);
     for (const line of I.herz || []) await showLine(line, { y: textY, cls: "klein", hold: 2400 });
+    SFX.aufbau(6.1, 0.9); // läuft bis zur Explosion
     await showLine(I.countdown, { y: textY, cls: "gold", hold: 1100 });
 
     heart.alphaT = 0.35;
+    heart.still = true; // ab jetzt nur noch die lauten Countdown-Schläge
     for (const n of ["3", "2", "1"]) {
       heart.kick = performance.now();
+      SFX.tick(0.8);
+      SFX.herz(1.4);
       const el = textEl("zahl", n);
       el.style.top = cy + "px";
       texte.append(el);
@@ -914,6 +937,7 @@
 
     // Herz explodiert
     if (heart) boomHeart();
+    SFX.mitternacht();
     flash();
     burst(cx, cy, "peony", ["gold", "champ"]);
     setTimeout(() => burst(cx - W * 0.28, cy - H * 0.12, "ring", ["champ", "weiss"]), 200);
@@ -928,10 +952,12 @@
       const y1 = H * 0.42 - (words.length > 1 ? size * 0.56 : 0);
       const jobs = words.map((w, i) => wait(i * 1300).then(() => textFirework(w, y1 + i * size * 1.12, size)));
       const groups = await Promise.all(jobs);
+      SFX.wunderkerze(5.8, 0.7);
       ambientGap = 1100;
       nextAmbient = performance.now() + 600;
       await wait(4800);
       groups.forEach(releaseText);
+      SFX.fallen();
       await wait(1300);
     }
 
@@ -942,8 +968,11 @@
     if (F.neujahrGross) {
       const size = fitSize([F.neujahrGross], W * 0.72, Math.min(H * 0.2, 240));
       const g = await textFirework(F.neujahrGross, H * 0.47, size);
+      SFX.neujahr();
+      SFX.wunderkerze(4.6, 0.6);
       await wait(4300);
       releaseText(g);
+      SFX.fallen();
     } else {
       await wait(4000);
     }
@@ -960,6 +989,7 @@
     const abs = textEl("absender", F.absender || "");
     box.append(...[wunsch, klein, abs].filter(Boolean));
     texte.append(box);
+    SFX.schluss();
     appear(wunsch);
     if (klein) {
       await wait(1800);
@@ -1000,6 +1030,12 @@
     if (!hasMusic) return;
     try { if (navigator.audioSession) navigator.audioSession.type = "playback"; } catch (e) { /* egal */ }
     try { audio.volume = 0; } catch (e) { /* egal */ }
+    const at = +I.musikStartBei || 0;
+    if (at > 0) {
+      const seek = () => { try { audio.currentTime = at; } catch (e) { /* egal */ } };
+      if (audio.readyState >= 1) seek();
+      else audio.addEventListener("loadedmetadata", seek, { once: true });
+    }
     const p = audio.play();
     if (p && p.catch) p.catch(() => {});
     fadeVolume(1, 2500);
@@ -1015,6 +1051,7 @@
 
   tonBtn.addEventListener("click", () => {
     audio.muted = !audio.muted;
+    SFX.mute(audio.muted);
     tonBtn.classList.toggle("stumm", audio.muted);
     tonBtn.setAttribute("aria-label", audio.muted ? "Ton an" : "Ton aus");
   });
@@ -1073,13 +1110,15 @@
     imgPromises = FOTOS.map((f) => loadImg(f.datei));
     if (hasMusic) {
       audio.src = I.musik;
-      audio.addEventListener("error", () => { hasMusic = false; tonBtn.hidden = true; }, { once: true });
+      audio.addEventListener("error", () => { hasMusic = false; }, { once: true });
     }
   }
 
   async function begin() {
     const btn = $("#los");
     btn.disabled = true;
+    SFX.init(); // Sound-Maschine starten (geht nur direkt nach einem Tipp)
+    SFX.start();
     startMusic();
     keepAwake();
     try {
@@ -1088,7 +1127,7 @@
     } catch (e) { /* egal */ }
 
     await hideScreen($("#start"));
-    if (hasMusic) tonBtn.hidden = false;
+    tonBtn.hidden = false;
     await fontsReady;
     await wait(400);
 

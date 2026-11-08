@@ -16,6 +16,9 @@ window.INHALT = {
   // Musik: MP3 in den Ordner "musik" legen und den Dateinamen hier eintragen.
   musik: "musik/song.mp3",
 
+  // Ab welcher Sekunde der Song starten soll (z. B. 12 = Intro überspringen)
+  musikStartBei: 0,
+
   // Was Papa sieht, wenn er zu früh scannt
   sperre: {
     titel: "Noch nicht, Papa 😏",
@@ -29,7 +32,7 @@ window.INHALT = {
     titelKlein: "Für",
     titelGross: "Papa",
     knopf: "Los geht's",
-    hinweis: "Ton an 🔊 · Handy hochkant",
+    hinweis: "Ton laut machen 🔊 · Handy hochkant",
   },
 
   // Die ersten Sätze, nacheinander
